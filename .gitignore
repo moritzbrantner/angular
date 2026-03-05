@@ -44,3 +44,6 @@ Thumbs.db
 # Bun
 .bun
 bun.lockb
+# Playwright
+/playwright-report/
+/test-results/
