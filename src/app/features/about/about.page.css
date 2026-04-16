@@ -1,0 +1,23 @@
+.page-intro,
+.section {
+  width: min(1120px, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.page-intro {
+  padding: 3rem 0 0;
+}
+
+.page-intro h1 {
+  margin: 0.25rem 0 1rem;
+  font-size: clamp(2.2rem, 4vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+@media (max-width: 640px) {
+  .page-intro,
+  .section {
+    width: min(1120px, calc(100% - 1.25rem));
+  }
+}

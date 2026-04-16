@@ -1,0 +1,58 @@
+.page-intro,
+.section {
+  width: min(1120px, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.page-intro {
+  padding: 3rem 0 0;
+}
+
+.page-intro h1 {
+  margin: 0.25rem 0 1rem;
+  font-size: clamp(2.2rem, 4vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.docs-grid,
+.code-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.docs-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.code-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.faq-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.faq-list summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.faq-list p {
+  margin: 1rem 0 0;
+}
+
+@media (max-width: 920px) {
+  .docs-grid,
+  .code-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .page-intro,
+  .section {
+    width: min(1120px, calc(100% - 1.25rem));
+  }
+}

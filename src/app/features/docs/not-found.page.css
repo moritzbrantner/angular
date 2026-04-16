@@ -1,0 +1,11 @@
+.empty-state {
+  width: min(1120px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 5rem 0;
+}
+
+@media (max-width: 640px) {
+  .empty-state {
+    width: min(1120px, calc(100% - 1.25rem));
+  }
+}

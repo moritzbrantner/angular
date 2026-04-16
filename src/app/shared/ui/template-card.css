@@ -1,0 +1,28 @@
+.template-card {
+  display: grid;
+  gap: 1rem;
+}
+
+.template-card__meta,
+.template-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.template-card h3 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.template-card p {
+  margin: 0;
+}
+
+.template-card__footer a {
+  color: var(--teal-700);
+  font-weight: 700;
+  text-decoration: none;
+}

@@ -1,59 +1,44 @@
-# Angular2
+# Foundry Stack
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.7.
+Static-first Angular showcase and template website with an optional server/backend path.
 
-## Development server
-
-To start a local development server, run:
+## Scripts
 
 ```bash
-ng serve
+npm start
+npm run build
+npm run build:github-pages
+npm run build:connected
+npm run build:server
+npm test -- --watch=false
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Deployment modes
 
-## Code scaffolding
+- `build`: browser-only production build for static hosting.
+- `build:github-pages`: static build plus `404.html` fallback copy for GitHub Pages.
+- `build:connected`: same frontend with API-backed repository providers.
+- `build:server`: browser + server bundles with Express endpoints under `/api/*`.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## GitHub Actions
+
+- `.github/workflows/github-pages.yml`: tests the app, builds the static site, and deploys `dist/angular2/browser` to GitHub Pages.
+- `.github/workflows/server-build.yml`: tests the app, builds the optional server variant, and uploads `dist/angular2` as an artifact.
+
+## GitHub Pages setup
+
+- Enable GitHub Pages in the repository settings and set the source to `GitHub Actions`.
+- The Pages workflow derives `baseHref` from the repository name automatically.
+- For local verification you can override the path:
 
 ```bash
-ng generate component component-name
+GITHUB_PAGES_BASE_HREF=/angular/ npm run build:github-pages
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Architecture
 
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Standalone, lazy-loaded Angular routes.
+- Signals for local page state.
+- Typed in-repo content for templates and showcases.
+- Repository abstraction to switch between static and API data.
+- Optional Express service endpoints for templates, showcases, and contact submissions.

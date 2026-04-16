@@ -1,0 +1,63 @@
+.page-intro,
+.section {
+  width: min(1120px, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.page-intro {
+  padding: 3rem 0 0;
+}
+
+.page-intro h1 {
+  margin: 0.25rem 0 1rem;
+  font-size: clamp(2.2rem, 4vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.contact-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.1fr);
+  gap: 1rem;
+}
+
+.contact-card,
+.contact-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.field span {
+  font-weight: 600;
+}
+
+.error-copy {
+  color: var(--error);
+}
+
+.submission-copy {
+  margin: 0;
+  color: var(--teal-700);
+}
+
+.submission-copy--error {
+  color: var(--error);
+}
+
+@media (max-width: 860px) {
+  .contact-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .page-intro,
+  .section {
+    width: min(1120px, calc(100% - 1.25rem));
+  }
+}

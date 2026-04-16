@@ -4,10 +4,13 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --configuration production",
+    "build:connected": "ng build --configuration production,connected",
+    "build:github-pages": "node scripts/build-github-pages.mjs",
+    "build:server": "ng build --configuration server",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:angular2": "node dist/angular2/server/server.mjs"
+    "serve:ssr": "node dist/angular2/server/server.mjs"
   },
   "private": true,
   "packageManager": "npm@11.9.0",
