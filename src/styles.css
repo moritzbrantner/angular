@@ -1,3 +1,258 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import 'tailwindcss';
+
+:root {
+  color-scheme: light;
+  --sand-50: #f7f0e6;
+  --sand-100: #efe4d5;
+  --surface: rgba(255, 250, 244, 0.84);
+  --surface-strong: rgba(255, 244, 228, 0.94);
+  --ink-950: #101317;
+  --ink-800: #1d242c;
+  --ink-700: #29323c;
+  --ink-500: #5a6570;
+  --ink-400: #758392;
+  --line: rgba(16, 19, 23, 0.12);
+  --line-strong: rgba(16, 19, 23, 0.2);
+  --amber-500: #ff9d39;
+  --amber-700: #a45b12;
+  --teal-500: #37c3b4;
+  --teal-700: #136c63;
+  --error: #a2322a;
+  --shadow: 0 24px 70px rgba(30, 20, 10, 0.12);
+  font-family:
+    "Sora",
+    "Segoe UI",
+    sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  color: var(--ink-800);
+  background:
+    radial-gradient(circle at top left, rgba(255, 157, 57, 0.22), transparent 28%),
+    radial-gradient(circle at top right, rgba(55, 195, 180, 0.17), transparent 30%),
+    linear-gradient(180deg, #fffaf4 0%, #f8f1e7 100%);
+  min-height: 100dvh;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3 {
+  color: var(--ink-950);
+  text-wrap: balance;
+}
+
+p,
+li,
+label,
+input,
+select,
+textarea,
+button,
+summary {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: 0.95rem;
+  border: 1px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--ink-950);
+}
+
+button {
+  cursor: pointer;
+  border: 0;
+}
+
+:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--teal-500) 65%, white);
+  outline-offset: 3px;
+}
+
+.page-shell {
+  display: grid;
+  gap: 2rem;
+}
+
+.section {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.section-heading {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: clamp(1.8rem, 3vw, 3rem);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--amber-700);
+}
+
+.lead-copy {
+  color: var(--ink-700);
+  font-size: 1.1rem;
+  max-width: 60ch;
+}
+
+.muted-copy {
+  color: var(--ink-500);
+}
+
+.content-card {
+  padding: 1.4rem;
+  border: 1px solid var(--line);
+  border-radius: 1.4rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 247, 240, 0.8));
+  box-shadow: var(--shadow);
+}
+
+.card-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.card-grid--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  padding: 0.85rem 1.15rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.button--primary {
+  background: var(--ink-950);
+  color: var(--sand-50);
+}
+
+.button--secondary {
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--ink-950);
+  border: 1px solid var(--line-strong);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(255, 157, 57, 0.14);
+  color: var(--amber-700);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.pill--alt {
+  background: rgba(55, 195, 180, 0.16);
+  color: var(--teal-700);
+}
+
+.stack-list,
+.inline-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stack-list {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.stack-list li {
+  position: relative;
+  padding-left: 1rem;
+}
+
+.stack-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.65rem;
+  inline-size: 0.4rem;
+  block-size: 0.4rem;
+  border-radius: 50%;
+  background: var(--amber-500);
+}
+
+.inline-list {
+  display: flex;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.inline-list li {
+  border-radius: 999px;
+  padding: 0.45rem 0.75rem;
+  background: rgba(16, 19, 23, 0.05);
+  color: var(--ink-700);
+  font-size: 0.9rem;
+}
+
+pre {
+  overflow-x: auto;
+  margin: 0;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: #11161c;
+  color: #f6efe5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+@media (max-width: 900px) {
+  .card-grid,
+  .card-grid--three {
+    grid-template-columns: 1fr;
+  }
+}

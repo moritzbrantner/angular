@@ -1,0 +1,48 @@
+.page-intro,
+.section {
+  width: min(1120px, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.page-intro {
+  padding: 3rem 0 0;
+}
+
+.page-intro h1 {
+  margin: 0.25rem 0 1rem;
+  font-size: clamp(2.2rem, 4vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.filters {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.filters--compact {
+  grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr);
+}
+
+.field {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.field span {
+  font-weight: 600;
+}
+
+@media (max-width: 760px) {
+  .filters--compact {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .page-intro,
+  .section {
+    width: min(1120px, calc(100% - 1.25rem));
+  }
+}

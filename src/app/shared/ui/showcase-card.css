@@ -1,0 +1,28 @@
+.showcase-card {
+  display: grid;
+  gap: 1rem;
+}
+
+.showcase-card__meta,
+.showcase-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.showcase-card h3 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.showcase-card p {
+  margin: 0;
+}
+
+.showcase-card__footer a {
+  color: var(--amber-700);
+  font-weight: 700;
+  text-decoration: none;
+}
