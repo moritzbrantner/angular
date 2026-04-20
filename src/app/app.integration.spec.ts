@@ -9,6 +9,8 @@ import { provideDataAccess } from './core/providers/data.providers';
 
 describe('App integration', () => {
   beforeEach(async () => {
+    window.localStorage.clear();
+
     await TestBed.configureTestingModule({
       imports: [App],
       providers: [
@@ -26,35 +28,33 @@ describe('App integration', () => {
 
     fixture.detectChanges();
     await router.navigateByUrl(url);
-    fixture.detectChanges();
     await fixture.whenStable();
+    fixture.detectChanges();
 
     return fixture.nativeElement as HTMLElement;
   }
 
-  it('renders the shell navigation on the home route', async () => {
+  it('redirects to the localized home route and renders the Next Template shell', async () => {
     const element = await renderAppAt('/');
 
-    expect(element.querySelector('.brand__name')?.textContent).toContain('Foundry Stack');
+    expect(TestBed.inject(Router).url).toBe('/en');
+    expect(element.querySelector('.brand__name')?.textContent).toContain('Next Template');
     expect(element.querySelector('.skip-link')?.textContent).toContain('Skip to main content');
     expect(element.querySelector('main h1')?.textContent).toContain(
-      'Build once for GitHub Pages, then grow into backend services without rewriting the UI.',
+      'One template, multiple production-ready starting points.',
     );
   });
 
-  it('loads a template detail route with related content and SEO metadata', async () => {
-    const element = await renderAppAt('/templates/atlas-launch-kit');
+  it('loads a localized form example route', async () => {
+    const element = await renderAppAt('/en/examples/forms');
 
-    expect(element.querySelector('main h1')?.textContent).toContain('Atlas Launch Kit');
-    expect(element.querySelector('main')?.textContent).toContain('Northstar Ops');
-    expect(document.title).toBe('Atlas Launch Kit | Foundry Stack');
+    expect(element.querySelector('main h1')?.textContent).toContain('Employee profile form');
+    expect(element.textContent).toContain('Reactive Forms');
   });
 
-  it('renders the not-found route for unknown paths', async () => {
-    const element = await renderAppAt('/does-not-exist');
+  it('renders the localized not-found route for unknown paths', async () => {
+    const element = await renderAppAt('/de/does-not-exist');
 
-    expect(element.querySelector('main h1')?.textContent).toContain(
-      'That page does not exist in this build.',
-    );
+    expect(element.querySelector('main h1')?.textContent).toContain('Die Seite existiert nicht.');
   });
 });

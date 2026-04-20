@@ -6,8 +6,12 @@ import { environment } from '../../../environments/environment';
 import { APP_ENVIRONMENT } from '../../core/config/environment.token';
 import { TEMPLATES } from '../content/site.content';
 import {
+  ApiNewsletterRepository,
   ApiTemplatesRepository,
+  StaticAuthRepository,
   StaticContactRepository,
+  StaticEmployeeRepository,
+  StaticProblemReportRepository,
   StaticTemplatesRepository,
 } from './content.repositories';
 
@@ -48,6 +52,34 @@ describe('Content repositories unit', () => {
 
       expect(result.ok).toBe(true);
     });
+
+    it('supports the new static auth, employee, and report repositories', async () => {
+      const authRepository = TestBed.inject(StaticAuthRepository);
+      const employeeRepository = TestBed.inject(StaticEmployeeRepository);
+      const reportRepository = TestBed.inject(StaticProblemReportRepository);
+
+      const auth = await firstValueFrom(
+        authRepository.login({
+          email: 'alex@example.com',
+          password: 'password',
+        }),
+      );
+      const employees = await firstValueFrom(employeeRepository.list());
+      const report = await firstValueFrom(
+        reportRepository.submit({
+          name: 'Alex',
+          email: 'alex@example.com',
+          area: 'Bug',
+          pageUrl: 'https://app.example.test',
+          subject: 'Unexpected state',
+          details: 'The application entered an unexpected state after saving.',
+        }),
+      );
+
+      expect(auth.ok).toBe(true);
+      expect(employees.length).toBeGreaterThan(0);
+      expect(report.referenceId).toMatch(/^STATIC-/);
+    });
   });
 
   describe('API repositories', () => {
@@ -84,6 +116,19 @@ describe('Content repositories unit', () => {
       pending.flush(TEMPLATES[0]);
 
       await expect(request).resolves.toEqual(TEMPLATES[0]);
+    });
+
+    it('posts newsletter subscriptions to the configured API endpoint', async () => {
+      const repository = TestBed.inject(ApiNewsletterRepository);
+      const request = firstValueFrom(repository.subscribe({ email: 'alex@example.com' }));
+      const http = TestBed.inject(HttpTestingController);
+
+      const pending = http.expectOne('https://api.example.test/newsletter');
+      expect(pending.request.method).toBe('POST');
+
+      pending.flush({ ok: true, message: 'Subscribed.' });
+
+      await expect(request).resolves.toEqual({ ok: true, message: 'Subscribed.' });
     });
   });
 });

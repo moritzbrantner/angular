@@ -1,9 +1,9 @@
 import { AppEnvironment } from '../app/core/config/app-environment';
 
 export const environment: AppEnvironment = {
-  siteName: 'Foundry Stack',
+  siteName: 'Next Template',
   siteDescription:
-    'A static-first Angular template and showcase platform that can also plug into backend services.',
+    'A localized Angular template with auth, forms, content, uploads, and optional backend services.',
   siteUrl: 'https://example.com',
   contentMode: 'static',
   apiBaseUrl: null,
