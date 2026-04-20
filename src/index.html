@@ -2,14 +2,44 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Foundry Stack</title>
+  <title>Next Template</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta
     name="description"
-    content="Static-first Angular template and showcase website with optional backend services."
+    content="Localized Angular template with auth, forms, content, uploads, and optional backend services."
   >
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script>
+    (() => {
+      const stored = window.localStorage.getItem('app-settings');
+      const themeCookie = document.cookie
+        .split('; ')
+        .find((cookie) => cookie.startsWith('theme='))
+        ?.split('=')[1];
+      let theme = themeCookie === 'dark' || themeCookie === 'light' ? themeCookie : null;
+
+      if (!theme && stored) {
+        try {
+          const settings = JSON.parse(stored);
+          theme = settings.theme === 'dark' || settings.theme === 'light' ? settings.theme : null;
+          document.documentElement.dataset.background = settings.background ?? 'paper';
+          document.documentElement.dataset.density = settings.compactSpacing ? 'compact' : 'comfortable';
+          document.documentElement.dataset.motion = settings.reducedMotion ? 'reduced' : 'full';
+          document.documentElement.dataset.hotkeyHints = settings.showHotkeyHints === false ? 'hidden' : 'visible';
+        } catch {
+          theme = null;
+        }
+      }
+
+      theme ??= window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.classList.add(theme);
+      document.documentElement.dataset.background ??= 'paper';
+      document.documentElement.dataset.density ??= 'comfortable';
+      document.documentElement.dataset.motion ??= 'full';
+      document.documentElement.dataset.hotkeyHints ??= 'visible';
+    })();
+  </script>
 </head>
 <body>
   <app-root></app-root>

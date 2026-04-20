@@ -1,52 +1,46 @@
 import { expect, test } from '@playwright/test';
 
-test('navigates from the home page through templates to the contact flow', async ({ page }) => {
+test('redirects to localized home and supports locale switching plus hotkeys', async ({ page }) => {
   await page.goto('/');
 
-  await expect(
-    page.getByRole('heading', {
-      level: 1,
-      name: 'Build once for GitHub Pages, then grow into backend services without rewriting the UI.',
-    }),
-  ).toBeVisible();
+  await expect(page).toHaveURL(/\/en$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'One template, multiple production-ready starting points.' })).toBeVisible();
 
-  await page.getByRole('link', { name: 'Browse templates' }).click();
-  await expect(page).toHaveURL(/\/templates$/);
+  await page.getByRole('link', { name: 'DE' }).click();
+  await expect(page).toHaveURL(/\/de$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'Eine Vorlage mit mehreren produktionsnahen Ausgangspunkten.' })).toBeVisible();
 
-  await page.getByRole('searchbox', { name: 'Search' }).fill('Atlas');
-  await expect(page.getByText('1 templates matched.')).toBeVisible();
+  await page.keyboard.press('Alt+F');
+  await expect(page).toHaveURL(/\/de\/examples\/forms$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'Mitarbeiterprofil-Formular' })).toBeVisible();
 
-  await page.getByRole('link', { name: 'View template' }).click();
-  await expect(page).toHaveURL(/\/templates\/atlas-launch-kit$/);
-  await expect(page.getByRole('heading', { level: 1, name: 'Atlas Launch Kit' })).toBeVisible();
-
-  await page.getByRole('link', { name: 'Request implementation' }).click();
-  await expect(page).toHaveURL(/\/contact$/);
-
-  await page.getByRole('textbox', { name: 'Name' }).fill('Alex');
-  await page.getByRole('textbox', { name: 'Email' }).fill('alex@example.com');
-  await page.getByRole('textbox', { name: 'Company' }).fill('Foundry');
-  await page.getByRole('combobox', { name: 'Project type' }).selectOption('Migration');
-  await page
-    .getByRole('textbox', { name: 'Message' })
-    .fill('We need a migration path that keeps the public site static while backend services are phased in.');
-
-  await page.getByRole('button', { name: 'Send request' }).click();
-
-  await expect(
-    page.getByText(
-      'Message captured in static mode. Swap to the connected or server build to send it to a backend.',
-    ),
-  ).toBeVisible();
+  await page.getByRole('button', { name: /Show navigation hotkeys/ }).click();
+  await expect(page.getByRole('dialog', { name: /Jump between routes/ })).toBeVisible();
 });
 
-test('serves deep links and the not-found route from the built app', async ({ page }) => {
-  await page.goto('/showcase/northstar-ops');
+test('runs auth, upload, report, and not-found flows', async ({ page }) => {
+  await page.goto('/en/login');
+  await page.getByRole('textbox', { name: 'Email' }).fill('alex@example.com');
+  await page.getByLabel('Password').fill('password');
+  await page.getByRole('button', { name: 'Log in' }).click();
+  await expect(page.getByText('Signed in with the static auth adapter')).toBeVisible();
 
-  await expect(page.getByRole('heading', { level: 1, name: 'Northstar Ops' })).toBeVisible();
-  await expect(page.getByText('This project maps back to a reusable template system.')).toBeVisible();
+  await page.goto('/en/examples/uploads');
+  const chooserPromise = page.waitForEvent('filechooser');
+  await page.getByText('Choose files').click();
+  const chooser = await chooserPromise;
+  await chooser.setFiles({
+    name: 'records.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from('{}'),
+  });
+  await expect(page.getByText('Validate schema')).toBeVisible();
 
-  await page.goto('/missing-route');
+  await page.goto('/en/report-problem');
+  await page.getByRole('textbox', { name: 'What happened?' }).fill('Saving changes closed the modal before the confirmation was visible.');
+  await page.getByRole('button', { name: 'Send report' }).click();
+  await expect(page.getByText(/Reference: STATIC-/)).toBeVisible();
 
-  await expect(page.getByRole('heading', { level: 1, name: 'That page does not exist in this build.' })).toBeVisible();
+  await page.goto('/en/missing-route');
+  await expect(page.getByRole('heading', { level: 1, name: 'The page does not exist.' })).toBeVisible();
 });

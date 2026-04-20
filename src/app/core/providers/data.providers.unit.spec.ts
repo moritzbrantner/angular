@@ -2,12 +2,24 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { environment } from '../../../environments/environment';
 import {
+  ApiAuthRepository,
   ApiContactRepository,
+  ApiEmployeeRepository,
+  ApiNewsletterRepository,
+  ApiProblemReportRepository,
   ApiShowcaseRepository,
   ApiTemplatesRepository,
+  AUTH_REPOSITORY,
   CONTACT_REPOSITORY,
+  EMPLOYEE_REPOSITORY,
+  NEWSLETTER_REPOSITORY,
+  PROBLEM_REPORT_REPOSITORY,
   SHOWCASE_REPOSITORY,
+  StaticAuthRepository,
   StaticContactRepository,
+  StaticEmployeeRepository,
+  StaticNewsletterRepository,
+  StaticProblemReportRepository,
   StaticShowcaseRepository,
   StaticTemplatesRepository,
   TEMPLATES_REPOSITORY,
@@ -28,6 +40,10 @@ describe('provideDataAccess unit', () => {
     expect(TestBed.inject(TEMPLATES_REPOSITORY)).toBeInstanceOf(StaticTemplatesRepository);
     expect(TestBed.inject(SHOWCASE_REPOSITORY)).toBeInstanceOf(StaticShowcaseRepository);
     expect(TestBed.inject(CONTACT_REPOSITORY)).toBeInstanceOf(StaticContactRepository);
+    expect(TestBed.inject(AUTH_REPOSITORY)).toBeInstanceOf(StaticAuthRepository);
+    expect(TestBed.inject(EMPLOYEE_REPOSITORY)).toBeInstanceOf(StaticEmployeeRepository);
+    expect(TestBed.inject(NEWSLETTER_REPOSITORY)).toBeInstanceOf(StaticNewsletterRepository);
+    expect(TestBed.inject(PROBLEM_REPORT_REPOSITORY)).toBeInstanceOf(StaticProblemReportRepository);
   });
 
   it('wires API repositories for the connected build mode', () => {
@@ -50,5 +66,9 @@ describe('provideDataAccess unit', () => {
     expect(TestBed.inject(TEMPLATES_REPOSITORY)).toBeInstanceOf(ApiTemplatesRepository);
     expect(TestBed.inject(SHOWCASE_REPOSITORY)).toBeInstanceOf(ApiShowcaseRepository);
     expect(TestBed.inject(CONTACT_REPOSITORY)).toBeInstanceOf(ApiContactRepository);
+    expect(TestBed.inject(AUTH_REPOSITORY)).toBeInstanceOf(ApiAuthRepository);
+    expect(TestBed.inject(EMPLOYEE_REPOSITORY)).toBeInstanceOf(ApiEmployeeRepository);
+    expect(TestBed.inject(NEWSLETTER_REPOSITORY)).toBeInstanceOf(ApiNewsletterRepository);
+    expect(TestBed.inject(PROBLEM_REPORT_REPOSITORY)).toBeInstanceOf(ApiProblemReportRepository);
   });
 });
