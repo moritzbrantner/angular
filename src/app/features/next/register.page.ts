@@ -121,13 +121,25 @@ export class RegisterPageComponent {
     this.form.disable();
     this.authRepository
       .register(this.form.getRawValue())
-      .pipe(finalize(() => {
-        this.submitting.set(false);
-        this.form.enable();
-      }))
-      .subscribe((result) => {
-        this.registrationHasError.set(!result.ok);
-        this.registrationMessage.set(result.message);
+      .pipe(
+        finalize(() => {
+          this.submitting.set(false);
+          this.form.enable();
+        }),
+      )
+      .subscribe({
+        next: (result) => {
+          this.registrationHasError.set(!result.ok);
+          this.registrationMessage.set(result.message);
+        },
+        error: () => {
+          this.registrationHasError.set(true);
+          this.registrationMessage.set(
+            this.locale() === 'de'
+              ? 'Kontoerstellung fehlgeschlagen. Pruefe deine Verbindung und versuche es erneut.'
+              : 'Account creation failed. Check your connection and try again.',
+          );
+        },
       });
   }
 
@@ -144,13 +156,25 @@ export class RegisterPageComponent {
     this.resetForm.disable();
     this.authRepository
       .requestPasswordReset(this.resetForm.getRawValue())
-      .pipe(finalize(() => {
-        this.resetSubmitting.set(false);
-        this.resetForm.enable();
-      }))
-      .subscribe((result) => {
-        this.resetHasError.set(!result.ok);
-        this.resetMessage.set(result.message);
+      .pipe(
+        finalize(() => {
+          this.resetSubmitting.set(false);
+          this.resetForm.enable();
+        }),
+      )
+      .subscribe({
+        next: (result) => {
+          this.resetHasError.set(!result.ok);
+          this.resetMessage.set(result.message);
+        },
+        error: () => {
+          this.resetHasError.set(true);
+          this.resetMessage.set(
+            this.locale() === 'de'
+              ? 'Passwort-Reset fehlgeschlagen. Pruefe deine Verbindung und versuche es erneut.'
+              : 'Password reset failed. Check your connection and try again.',
+          );
+        },
       });
   }
 }
