@@ -1,8 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { NAVIGATION } from '../../shared/content/next-template.content';
 import { AppSettingsService } from './app-settings.service';
 import { ConsentService } from './consent.service';
-import { HotkeyService } from './hotkey.service';
+import {
+  ANGULAR_INPUT_BINDINGS_REGISTRY,
+  ANGULAR_NAVIGATION_PATH_BY_ACTION,
+} from './input-bindings.service';
 import { UploadClassifierService } from './upload-classifier.service';
 
 describe('App template services unit', () => {
@@ -44,10 +46,22 @@ describe('App template services unit', () => {
     expect(window.localStorage.getItem('app-consent')).toContain('"analytics":true');
   });
 
-  it('resolves navigation entries from Alt hotkeys', () => {
-    const service = TestBed.inject(HotkeyService);
+  it('declares navigation hotkeys in the shared input-bindings registry', () => {
+    const formAction = ANGULAR_INPUT_BINDINGS_REGISTRY.actions.find(
+      (action) => action.id === 'angular.navigate.examples.forms',
+    );
+    const dismissAction = ANGULAR_INPUT_BINDINGS_REGISTRY.actions.find(
+      (action) => action.id === 'angular.dismissOverlays',
+    );
 
-    expect(service.findEntry(NAVIGATION.en, 'f')?.path).toBe('examples/forms');
-    expect(service.findEntry(NAVIGATION.en, 'x')).toBeUndefined();
+    expect(ANGULAR_NAVIGATION_PATH_BY_ACTION['angular.navigate.examples.forms']).toBe('examples/forms');
+    expect(formAction?.defaults[0].sequence[0]).toEqual({
+      key: { kind: 'logical', value: 'f' },
+      modifiers: { alt: true },
+    });
+    expect(dismissAction?.defaults[0].sequence[0]).toEqual({
+      key: { kind: 'logical', value: 'Escape' },
+      modifiers: {},
+    });
   });
 });

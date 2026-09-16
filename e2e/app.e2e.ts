@@ -1,4 +1,10 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
+
+async function waitForInputBindings(page: Page): Promise<void> {
+  await expect
+    .poll(() => page.locator('html').getAttribute('data-input-bindings-state'))
+    .toBe('ready');
+}
 
 test('redirects to localized home and supports locale switching plus hotkeys', async ({ page }) => {
   await page.goto('/');
@@ -10,12 +16,34 @@ test('redirects to localized home and supports locale switching plus hotkeys', a
   await expect(page).toHaveURL(/\/de$/);
   await expect(page.getByRole('heading', { level: 1, name: 'Eine Vorlage mit mehreren produktionsnahen Ausgangspunkten.' })).toBeVisible();
 
+  await waitForInputBindings(page);
   await page.keyboard.press('Alt+F');
   await expect(page).toHaveURL(/\/de\/examples\/forms$/);
   await expect(page.getByRole('heading', { level: 1, name: 'Mitarbeiterprofil-Formular' })).toBeVisible();
 
   await page.getByRole('button', { name: /Show navigation hotkeys/ }).click();
   await expect(page.getByRole('dialog', { name: /Jump between routes/ })).toBeVisible();
+});
+
+test('shared input bindings ignore navigation in editors but preserve Escape dismissal', async ({ page }) => {
+  await page.goto('/en/login');
+  await waitForInputBindings(page);
+
+  await page.getByRole('button', { name: 'Discover' }).click();
+  const menuHome = page.locator('.menu-panel').getByRole('link', { name: 'Home' });
+  await expect(menuHome).toBeVisible();
+
+  const email = page.getByRole('textbox', { name: 'Email' });
+  await email.fill('alex@example.com');
+  await email.press('Alt+F');
+
+  await expect(page).toHaveURL(/\/en\/login$/);
+  await expect(email).toHaveValue('alex@example.com');
+  await expect(menuHome).toBeVisible();
+
+  await email.press('Escape');
+  await expect(menuHome).toBeHidden();
+  await expect(email).toHaveValue('alex@example.com');
 });
 
 test('runs auth, upload, report, and not-found flows', async ({ page }) => {

@@ -6,6 +6,7 @@ import { App } from './app';
 import { routes } from './app.routes';
 import { APP_ENVIRONMENT } from './core/config/environment.token';
 import { provideDataAccess } from './core/providers/data.providers';
+import { InputBindingsService } from './core/services/input-bindings.service';
 
 describe('App integration', () => {
   beforeEach(async () => {
@@ -18,6 +19,12 @@ describe('App integration', () => {
         provideRouter(routes),
         { provide: APP_ENVIRONMENT, useValue: environment },
         provideDataAccess(),
+        {
+          provide: InputBindingsService,
+          useValue: {
+            attach: () => () => {},
+          },
+        },
       ],
     }).compileComponents();
   });
@@ -50,23 +57,6 @@ describe('App integration', () => {
 
     expect(element.querySelector('main h1')?.textContent).toContain('Employee profile form');
     expect(element.textContent).toContain('Reactive Forms');
-  });
-
-  it('does not run global navigation hotkeys while typing in editable controls', async () => {
-    const element = await renderAppAt('/en/login');
-    const emailInput = element.querySelector('input[type="email"]');
-
-    expect(emailInput).not.toBeNull();
-    emailInput?.dispatchEvent(
-      new KeyboardEvent('keydown', {
-        key: 'f',
-        altKey: true,
-        bubbles: true,
-      }),
-    );
-    await Promise.resolve();
-
-    expect(TestBed.inject(Router).url).toBe('/en/login');
   });
 
   it('renders the localized not-found route for unknown paths', async () => {

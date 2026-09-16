@@ -47,6 +47,12 @@ Supported locales are `en` and `de`. Locale links preserve the current path when
 - Employee table with repository-backed data and loading/error/empty states.
 - Static blog and changelog content stored as typed records.
 
+## Shared input-binding foundation
+
+Navigation shortcuts consume the shared `moritzbrantner/input-bindings` browser runtime. Angular remains authoritative for semantic navigation actions, default route shortcuts, active application context, locale-aware routing, and overlay behavior. The shared foundation owns key normalization, modifier and AltGraph semantics, matching, event consumption, text-entry exclusion, and browser reset/release lifecycle.
+
+Until `input-bindings` publishes versioned packages, the adapter loads its self-contained GitHub Pages ESM bridge. Failure to load that bridge is fail-closed: Angular does not fall back to a second local key resolver, and browser validation waits for the shared runtime to report `ready`.
+
 ## Deployment modes
 
 - `build`: browser-only production build for static hosting.
@@ -71,4 +77,5 @@ Supported locales are `en` and `de`. Locale links preserve the current path when
 - Signals for local UI state.
 - Reactive Forms for user input.
 - Repository abstraction for static, connected, and server-backed behavior.
+- Shared `input-bindings` runtime for keyboard resolution and lifecycle; Angular owns semantic actions and effects.
 - GitHub Pages fallback routing through a copied `404.html`.
