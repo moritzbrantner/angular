@@ -136,7 +136,7 @@ export class InputBindingsService {
           registry: DISMISS_RUNTIME_REGISTRY,
           getActiveContexts: () => new Set([CONTEXT_ID]),
           chordTimeoutMs: 900,
-          consumePolicy: 'matched',
+          consumePolicy: 'never',
           onDispatch: (dispatch: { action: string; phase: string }) => {
             if (dispatch.phase === 'press' && dispatch.action === DISMISS_ACTION) {
               actions.dismissOverlays();
