@@ -1,60 +1,99 @@
-import { Routes } from '@angular/router';
+import { inject } from '@angular/core';
+import { CanActivateFn, Router, Routes } from '@angular/router';
+
+const localeGuard: CanActivateFn = (route) => {
+  const locale = route.paramMap.get('locale');
+  return locale === 'en' || locale === 'de' ? true : inject(Router).parseUrl('/en');
+};
 
 export const routes: Routes = [
   {
     path: '',
-    title: 'Static-first template and showcase platform',
-    loadComponent: () => import('./features/home/home.page').then((module) => module.HomePageComponent),
+    pathMatch: 'full',
+    redirectTo: 'en',
   },
   {
-    path: 'templates',
-    title: 'Templates',
-    loadComponent: () =>
-      import('./features/templates/templates.page').then((module) => module.TemplatesPageComponent),
-  },
-  {
-    path: 'templates/:slug',
-    title: 'Template detail',
-    loadComponent: () =>
-      import('./features/templates/template-detail.page').then(
-        (module) => module.TemplateDetailPageComponent,
-      ),
-  },
-  {
-    path: 'showcase',
-    title: 'Showcase',
-    loadComponent: () =>
-      import('./features/showcase/showcase.page').then((module) => module.ShowcasePageComponent),
-  },
-  {
-    path: 'showcase/:slug',
-    title: 'Showcase detail',
-    loadComponent: () =>
-      import('./features/showcase/showcase-detail.page').then(
-        (module) => module.ShowcaseDetailPageComponent,
-      ),
-  },
-  {
-    path: 'docs',
-    title: 'Documentation',
-    loadComponent: () => import('./features/docs/docs.page').then((module) => module.DocsPageComponent),
-  },
-  {
-    path: 'about',
-    title: 'About',
-    loadComponent: () =>
-      import('./features/about/about.page').then((module) => module.AboutPageComponent),
-  },
-  {
-    path: 'contact',
-    title: 'Contact',
-    loadComponent: () =>
-      import('./features/contact/contact.page').then((module) => module.ContactPageComponent),
+    path: ':locale',
+    canActivate: [localeGuard],
+    children: [
+      {
+        path: '',
+        title: 'Next Template',
+        loadComponent: () => import('./features/next/home.page').then((module) => module.NextHomePageComponent),
+      },
+      {
+        path: 'about',
+        title: 'About This Project',
+        loadComponent: () => import('./features/next/about.page').then((module) => module.NextAboutPageComponent),
+      },
+      {
+        path: 'login',
+        title: 'Log in',
+        loadComponent: () => import('./features/next/login.page').then((module) => module.LoginPageComponent),
+      },
+      {
+        path: 'register',
+        title: 'Register',
+        loadComponent: () => import('./features/next/register.page').then((module) => module.RegisterPageComponent),
+      },
+      {
+        path: 'examples/forms',
+        title: 'Employee profile form',
+        loadComponent: () =>
+          import('./features/next/form-example.page').then((module) => module.FormExamplePageComponent),
+      },
+      {
+        path: 'examples/story',
+        title: 'Story Scroll Demo',
+        loadComponent: () => import('./features/next/story.page').then((module) => module.StoryPageComponent),
+      },
+      {
+        path: 'examples/communication',
+        title: 'Realtime communication',
+        loadComponent: () =>
+          import('./features/next/communication.page').then((module) => module.CommunicationPageComponent),
+      },
+      {
+        path: 'examples/uploads',
+        title: 'Uploads',
+        loadComponent: () => import('./features/next/uploads.page').then((module) => module.UploadsPageComponent),
+      },
+      {
+        path: 'table',
+        title: 'Employee table',
+        loadComponent: () => import('./features/next/table.page').then((module) => module.TablePageComponent),
+      },
+      {
+        path: 'remocn',
+        title: 'remocn showcase',
+        loadComponent: () => import('./features/next/remocn.page').then((module) => module.RemocnPageComponent),
+      },
+      {
+        path: 'blog',
+        title: 'Blog',
+        loadComponent: () => import('./features/next/blog.page').then((module) => module.BlogPageComponent),
+      },
+      {
+        path: 'changelog',
+        title: 'Changelog',
+        loadComponent: () => import('./features/next/changelog.page').then((module) => module.ChangelogPageComponent),
+      },
+      {
+        path: 'report-problem',
+        title: 'Report a problem',
+        loadComponent: () =>
+          import('./features/next/report-problem.page').then((module) => module.ReportProblemPageComponent),
+      },
+      {
+        path: '**',
+        title: 'Not found',
+        loadComponent: () =>
+          import('./features/next/localized-not-found.page').then((module) => module.LocalizedNotFoundPageComponent),
+      },
+    ],
   },
   {
     path: '**',
-    title: 'Page not found',
-    loadComponent: () =>
-      import('./features/docs/not-found.page').then((module) => module.NotFoundPageComponent),
+    redirectTo: 'en',
   },
 ];

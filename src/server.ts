@@ -7,7 +7,15 @@ import {
 import express from 'express';
 import { join } from 'node:path';
 import { SHOWCASES, TEMPLATES } from './app/shared/content/site.content';
-import { ContactRequest } from './app/shared/models/content.models';
+import { EMPLOYEES } from './app/shared/content/next-template.content';
+import {
+  AuthCredentials,
+  ContactRequest,
+  NewsletterSubscription,
+  PasswordResetRequest,
+  ProblemReportRequest,
+  RegisterRequest,
+} from './app/shared/models/content.models';
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
@@ -68,6 +76,80 @@ app.post('/api/contact', (req, res) => {
     ok: true,
     message: `Received a request from ${body.name}. Connect this endpoint to your CRM or queue in production.`,
   });
+});
+
+app.post('/api/auth/login', (req, res) => {
+  const body = req.body as Partial<AuthCredentials> | undefined;
+  if (!body?.email || !body.password) {
+    res.status(400).json({ ok: false, message: 'Email and password are required.' });
+    return;
+  }
+
+  res.json({
+    ok: true,
+    message: 'Signed in through the server auth stub. Replace this with a real session provider.',
+  });
+});
+
+app.post('/api/auth/register', (req, res) => {
+  const body = req.body as Partial<RegisterRequest> | undefined;
+  if (!body?.name || !body.email || !body.password || body.password !== body.confirmPassword) {
+    res.status(400).json({ ok: false, message: 'Name, email, and matching passwords are required.' });
+    return;
+  }
+
+  res.json({
+    ok: true,
+    message: `Created an account stub for ${body.name}. Connect this to your auth provider in production.`,
+  });
+});
+
+app.post('/api/auth/password-reset', (req, res) => {
+  const body = req.body as Partial<PasswordResetRequest> | undefined;
+  if (!body?.email) {
+    res.status(400).json({ ok: false, message: 'Email is required.' });
+    return;
+  }
+
+  res.json({
+    ok: true,
+    message: 'Password reset request accepted by the server stub.',
+  });
+});
+
+app.post('/api/newsletter', (req, res) => {
+  const body = req.body as Partial<NewsletterSubscription> | undefined;
+  if (!body?.email) {
+    res.status(400).json({ ok: false, message: 'Email is required.' });
+    return;
+  }
+
+  res.json({
+    ok: true,
+    message: `Subscribed ${body.email} through the server newsletter stub.`,
+  });
+});
+
+app.post('/api/problem-reports', (req, res) => {
+  const body = req.body as Partial<ProblemReportRequest> | undefined;
+  if (!body?.name || !body.email || !body.subject || !body.details) {
+    res.status(400).json({
+      ok: false,
+      referenceId: '',
+      message: 'Name, email, subject, and details are required.',
+    });
+    return;
+  }
+
+  res.json({
+    ok: true,
+    referenceId: `SRV-${Date.now().toString(36).toUpperCase()}`,
+    message: 'Problem report accepted by the server stub.',
+  });
+});
+
+app.get('/api/employees', (_req, res) => {
+  res.json(EMPLOYEES);
 });
 
 /**

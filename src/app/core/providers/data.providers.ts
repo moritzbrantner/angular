@@ -1,12 +1,24 @@
 import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import {
+  ApiAuthRepository,
   ApiContactRepository,
+  ApiEmployeeRepository,
+  ApiNewsletterRepository,
+  ApiProblemReportRepository,
   ApiShowcaseRepository,
   ApiTemplatesRepository,
+  AUTH_REPOSITORY,
   CONTACT_REPOSITORY,
+  EMPLOYEE_REPOSITORY,
+  NEWSLETTER_REPOSITORY,
+  PROBLEM_REPORT_REPOSITORY,
   SHOWCASE_REPOSITORY,
+  StaticAuthRepository,
   StaticContactRepository,
+  StaticEmployeeRepository,
+  StaticNewsletterRepository,
+  StaticProblemReportRepository,
   StaticShowcaseRepository,
   StaticTemplatesRepository,
   TEMPLATES_REPOSITORY,
@@ -43,6 +55,42 @@ export function provideDataAccess(): EnvironmentProviders {
         apiRepository: ApiContactRepository,
       ) => (environment.contentMode === 'api' ? apiRepository : staticRepository),
       deps: [APP_ENVIRONMENT, StaticContactRepository, ApiContactRepository],
+    },
+    {
+      provide: AUTH_REPOSITORY,
+      useFactory: (
+        environment: AppEnvironment,
+        staticRepository: StaticAuthRepository,
+        apiRepository: ApiAuthRepository,
+      ) => (environment.contentMode === 'api' ? apiRepository : staticRepository),
+      deps: [APP_ENVIRONMENT, StaticAuthRepository, ApiAuthRepository],
+    },
+    {
+      provide: EMPLOYEE_REPOSITORY,
+      useFactory: (
+        environment: AppEnvironment,
+        staticRepository: StaticEmployeeRepository,
+        apiRepository: ApiEmployeeRepository,
+      ) => (environment.contentMode === 'api' ? apiRepository : staticRepository),
+      deps: [APP_ENVIRONMENT, StaticEmployeeRepository, ApiEmployeeRepository],
+    },
+    {
+      provide: NEWSLETTER_REPOSITORY,
+      useFactory: (
+        environment: AppEnvironment,
+        staticRepository: StaticNewsletterRepository,
+        apiRepository: ApiNewsletterRepository,
+      ) => (environment.contentMode === 'api' ? apiRepository : staticRepository),
+      deps: [APP_ENVIRONMENT, StaticNewsletterRepository, ApiNewsletterRepository],
+    },
+    {
+      provide: PROBLEM_REPORT_REPOSITORY,
+      useFactory: (
+        environment: AppEnvironment,
+        staticRepository: StaticProblemReportRepository,
+        apiRepository: ApiProblemReportRepository,
+      ) => (environment.contentMode === 'api' ? apiRepository : staticRepository),
+      deps: [APP_ENVIRONMENT, StaticProblemReportRepository, ApiProblemReportRepository],
     },
   ]);
 }
