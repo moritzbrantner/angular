@@ -65,6 +65,10 @@ export class App {
       return;
     }
 
+    if (this.isEditableTarget(event.target)) {
+      return;
+    }
+
     if (!event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
       return;
     }
@@ -82,5 +86,9 @@ export class App {
     this.closeMenus();
     this.closeHotkeys();
     void this.router.navigateByUrl(this.localized(entry.path));
+  }
+
+  private isEditableTarget(target: EventTarget | null): boolean {
+    return target instanceof HTMLElement && (target.matches('input, textarea, select') || target.isContentEditable);
   }
 }
