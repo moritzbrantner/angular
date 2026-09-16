@@ -1,4 +1,18 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>moritzbrantner/coding-agent-conventions"]
+  "extends": ["github>moritzbrantner/coding-agent-conventions"],
+  "packageRules": [
+    {
+      "description": "Keep the Angular framework, CLI/build toolchain, and SSR packages on one coordinated v22 line.",
+      "matchPackageNames": ["/^@angular\\//"],
+      "groupName": "Angular 22 toolchain",
+      "allowedVersions": ">=22.0.0 <23.0.0"
+    },
+    {
+      "description": "Keep the TypeScript compiler on the range supported by Angular 22.",
+      "matchPackageNames": ["typescript"],
+      "groupName": "Angular 22 toolchain",
+      "allowedVersions": ">=6.0.0 <6.1.0"
+    }
+  ]
 }
