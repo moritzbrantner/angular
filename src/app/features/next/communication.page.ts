@@ -96,13 +96,25 @@ export class CommunicationPageComponent {
     this.form.disable();
     this.newsletterRepository
       .subscribe(this.form.getRawValue())
-      .pipe(finalize(() => {
-        this.submitting.set(false);
-        this.form.enable();
-      }))
-      .subscribe((result) => {
-        this.hasError.set(!result.ok);
-        this.message.set(result.message);
+      .pipe(
+        finalize(() => {
+          this.submitting.set(false);
+          this.form.enable();
+        }),
+      )
+      .subscribe({
+        next: (result) => {
+          this.hasError.set(!result.ok);
+          this.message.set(result.message);
+        },
+        error: () => {
+          this.hasError.set(true);
+          this.message.set(
+            this.locale() === 'de'
+              ? 'Newsletter-Anmeldung fehlgeschlagen. Pruefe deine Verbindung und versuche es erneut.'
+              : 'Newsletter subscription failed. Check your connection and try again.',
+          );
+        },
       });
   }
 }
