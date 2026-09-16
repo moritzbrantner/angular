@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { AppSettingsService } from './core/services/app-settings.service';
 import { ConsentService } from './core/services/consent.service';
-import { HotkeyService } from './core/services/hotkey.service';
+import { InputBindingsService } from './core/services/input-bindings.service';
 import { LocaleService } from './core/services/locale.service';
 import { NAVIGATION, NavigationEntry } from './shared/content/next-template.content';
 import { Locale } from './shared/models/content.models';
@@ -15,15 +15,15 @@ import { Locale } from './shared/models/content.models';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'app-root',
-    '(window:keydown)': 'handleKeydown($event)',
   },
 })
 export class App {
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly inputBindings = inject(InputBindingsService);
   protected readonly localeService = inject(LocaleService);
   protected readonly settingsService = inject(AppSettingsService);
   protected readonly consentService = inject(ConsentService);
-  private readonly hotkeyService = inject(HotkeyService);
 
   protected readonly locale = this.localeService.locale;
   protected readonly groups = computed(() => NAVIGATION[this.locale()]);
@@ -33,6 +33,17 @@ export class App {
   protected readonly openMenu = signal<'discover' | 'workspace' | null>(null);
   protected readonly hotkeysOpen = signal(false);
   protected readonly currentYear = new Date().getFullYear();
+
+  constructor() {
+    const detachInputBindings = this.inputBindings.attach({
+      navigate: (path) => this.navigateToPath(path),
+      dismissOverlays: () => {
+        this.closeMenus();
+        this.closeHotkeys();
+      },
+    });
+    this.destroyRef.onDestroy(detachInputBindings);
+  }
 
   protected localized(path: string): string {
     return this.localeService.localizedPath(path);
@@ -58,37 +69,13 @@ export class App {
     this.hotkeysOpen.set(false);
   }
 
-  protected handleKeydown(event: KeyboardEvent): void {
-    if (event.key === 'Escape') {
-      this.closeMenus();
-      this.closeHotkeys();
-      return;
-    }
-
-    if (this.isEditableTarget(event.target)) {
-      return;
-    }
-
-    if (!event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
-      return;
-    }
-
-    const entry = this.hotkeyService.findEntry(this.groups(), event.key);
-    if (!entry) {
-      return;
-    }
-
-    event.preventDefault();
-    void this.navigateTo(entry);
+  protected navigateTo(entry: NavigationEntry): void {
+    this.navigateToPath(entry.path);
   }
 
-  protected navigateTo(entry: NavigationEntry): void {
+  private navigateToPath(path: string): void {
     this.closeMenus();
     this.closeHotkeys();
-    void this.router.navigateByUrl(this.localized(entry.path));
-  }
-
-  private isEditableTarget(target: EventTarget | null): boolean {
-    return target instanceof HTMLElement && (target.matches('input, textarea, select') || target.isContentEditable);
+    void this.router.navigateByUrl(this.localized(path));
   }
 }
