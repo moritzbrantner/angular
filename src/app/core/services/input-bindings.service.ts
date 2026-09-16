@@ -7,6 +7,7 @@ export const INPUT_BINDINGS_BUNDLE_URL =
 
 const CONTEXT_ID = 'angularApp';
 const DISMISS_ACTION = 'angular.dismissOverlays';
+const RUNTIME_STATE_DATASET_KEY = 'inputBindingsState';
 
 export interface AngularInputActions {
   navigate(path: string): void;
@@ -97,6 +98,7 @@ export class InputBindingsService {
 
     let disposed = false;
     let detachRuntime = () => {};
+    document.documentElement.dataset[RUNTIME_STATE_DATASET_KEY] = 'loading';
 
     const runtimePromise = import(/* @vite-ignore */ INPUT_BINDINGS_BUNDLE_URL) as Promise<RuntimeModule>;
     void runtimePromise.then(
@@ -134,8 +136,10 @@ export class InputBindingsService {
           ignoreTextEntry: true,
           mode: 'logical',
         });
+        document.documentElement.dataset[RUNTIME_STATE_DATASET_KEY] = 'ready';
       },
       (error) => {
+        document.documentElement.dataset[RUNTIME_STATE_DATASET_KEY] = 'error';
         console.error('Failed to load shared input-bindings runtime', error);
       },
     );
@@ -143,6 +147,7 @@ export class InputBindingsService {
     return () => {
       disposed = true;
       detachRuntime();
+      delete document.documentElement.dataset[RUNTIME_STATE_DATASET_KEY];
     };
   }
 }
