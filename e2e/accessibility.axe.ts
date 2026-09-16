@@ -1,5 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 const representativeRoutes = [
   '/en',
@@ -10,7 +10,7 @@ const representativeRoutes = [
   '/de',
 ] as const;
 
-async function expectNoWcagViolations(page: Parameters<typeof AxeBuilder>[0]['page']): Promise<void> {
+async function expectNoWcagViolations(page: Page): Promise<void> {
   const results = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
     .analyze();
