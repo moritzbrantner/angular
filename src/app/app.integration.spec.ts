@@ -52,6 +52,23 @@ describe('App integration', () => {
     expect(element.textContent).toContain('Reactive Forms');
   });
 
+  it('does not run global navigation hotkeys while typing in editable controls', async () => {
+    const element = await renderAppAt('/en/login');
+    const emailInput = element.querySelector('input[type="email"]');
+
+    expect(emailInput).not.toBeNull();
+    emailInput?.dispatchEvent(
+      new KeyboardEvent('keydown', {
+        key: 'f',
+        altKey: true,
+        bubbles: true,
+      }),
+    );
+    await Promise.resolve();
+
+    expect(TestBed.inject(Router).url).toBe('/en/login');
+  });
+
   it('renders the localized not-found route for unknown paths', async () => {
     const element = await renderAppAt('/de/does-not-exist');
 
