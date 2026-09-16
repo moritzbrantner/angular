@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  ElementRef,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { AppSettingsService } from './core/services/app-settings.service';
 import { ConsentService } from './core/services/consent.service';
@@ -24,6 +33,9 @@ export class App {
   protected readonly localeService = inject(LocaleService);
   protected readonly settingsService = inject(AppSettingsService);
   protected readonly consentService = inject(ConsentService);
+  private readonly hotkeyTrigger = viewChild<ElementRef<HTMLButtonElement>>('hotkeyTrigger');
+  private readonly hotkeyDialog = viewChild<ElementRef<HTMLElement>>('hotkeyDialog');
+  private readonly hotkeyClose = viewChild<ElementRef<HTMLButtonElement>>('hotkeyClose');
 
   protected readonly locale = this.localeService.locale;
   protected readonly groups = computed(() => NAVIGATION[this.locale()]);
@@ -62,11 +74,52 @@ export class App {
   }
 
   protected toggleHotkeys(): void {
-    this.hotkeysOpen.update((open) => !open);
+    if (this.hotkeysOpen()) {
+      this.closeHotkeys();
+      return;
+    }
+
+    this.hotkeysOpen.set(true);
+    queueMicrotask(() => this.hotkeyClose()?.nativeElement.focus());
   }
 
   protected closeHotkeys(): void {
+    if (!this.hotkeysOpen()) {
+      return;
+    }
+
     this.hotkeysOpen.set(false);
+    queueMicrotask(() => this.hotkeyTrigger()?.nativeElement.focus());
+  }
+
+  protected handleHotkeyDialogKeydown(event: KeyboardEvent): void {
+    if (event.key !== 'Tab') {
+      return;
+    }
+
+    const dialog = this.hotkeyDialog()?.nativeElement;
+    if (!dialog) {
+      return;
+    }
+
+    const focusable = Array.from(
+      dialog.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], [tabindex]:not([tabindex="-1"])'),
+    ).filter((element) => !element.hasAttribute('hidden'));
+    const first = focusable.at(0);
+    const last = focusable.at(-1);
+
+    if (!first || !last) {
+      event.preventDefault();
+      return;
+    }
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
   }
 
   protected navigateTo(entry: NavigationEntry): void {
