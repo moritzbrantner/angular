@@ -27,12 +27,25 @@ for (const route of representativeRoutes) {
   });
 }
 
-test('passes all Axe checks with the hotkey dialog open', async ({ page }) => {
+test('hotkey dialog traps focus, restores it, and passes Axe checks', async ({ page }) => {
   await page.goto('/en');
   await expectRouteReady(page, 'One template, multiple production-ready starting points.');
-  await page.getByRole('button', { name: 'Show navigation hotkeys' }).click();
-  await expect(page.getByRole('dialog')).toBeVisible();
+
+  const trigger = page.getByRole('button', { name: 'Show navigation hotkeys' });
+  await trigger.click();
+
+  const dialog = page.getByRole('dialog');
+  const closeButton = page.getByRole('button', { name: 'Close hotkeys' });
+  await expect(dialog).toBeVisible();
+  await expect(closeButton).toBeFocused();
+
+  await page.keyboard.press('Shift+Tab');
+  await expect(dialog.locator('button').last()).toBeFocused();
   await expectNoAxeViolations(page);
+
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeHidden();
+  await expect(trigger).toBeFocused();
 });
 
 test('passes all Axe checks in dark mode', async ({ page }) => {
