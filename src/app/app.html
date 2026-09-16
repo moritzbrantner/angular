@@ -63,7 +63,13 @@
           <a class="account-link" [routerLink]="localized(item.path)" (click)="closeMenus()">{{ item.label }}</a>
         }
 
-        <button class="icon-button" type="button" (click)="toggleHotkeys()" aria-label="Show navigation hotkeys">
+        <button
+          #hotkeyTrigger
+          class="icon-button"
+          type="button"
+          (click)="toggleHotkeys()"
+          aria-label="Show navigation hotkeys"
+        >
           Hotkeys
           <span aria-hidden="true">?</span>
         </button>
@@ -84,14 +90,29 @@
   </header>
 
   @if (hotkeysOpen()) {
-    <section class="hotkey-dialog" role="dialog" aria-modal="true" aria-labelledby="hotkey-title">
+    <section
+      #hotkeyDialog
+      class="hotkey-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="hotkey-title"
+      (keydown)="handleHotkeyDialogKeydown($event)"
+    >
       <div class="hotkey-dialog__panel">
         <div class="dialog-heading">
           <div>
             <p class="eyebrow">Navigation hotkeys</p>
             <h2 id="hotkey-title">Jump between routes with Alt shortcuts.</h2>
           </div>
-          <button class="icon-only" type="button" aria-label="Close hotkeys" (click)="closeHotkeys()">x</button>
+          <button
+            #hotkeyClose
+            class="icon-only"
+            type="button"
+            aria-label="Close hotkeys"
+            (click)="closeHotkeys()"
+          >
+            x
+          </button>
         </div>
 
         <div class="hotkey-grid">
