@@ -117,13 +117,25 @@ export class ReportProblemPageComponent {
     this.form.disable();
     this.problemReportRepository
       .submit(this.form.getRawValue())
-      .pipe(finalize(() => {
-        this.submitting.set(false);
-        this.form.enable();
-      }))
-      .subscribe((result) => {
-        this.hasError.set(!result.ok);
-        this.message.set(`${result.message} Reference: ${result.referenceId}`);
+      .pipe(
+        finalize(() => {
+          this.submitting.set(false);
+          this.form.enable();
+        }),
+      )
+      .subscribe({
+        next: (result) => {
+          this.hasError.set(!result.ok);
+          this.message.set(`${result.message} Reference: ${result.referenceId}`);
+        },
+        error: () => {
+          this.hasError.set(true);
+          this.message.set(
+            this.locale() === 'de'
+              ? 'Problembericht konnte nicht gesendet werden. Pruefe deine Verbindung und versuche es erneut.'
+              : 'Problem report failed to send. Check your connection and try again.',
+          );
+        },
       });
   }
 }
