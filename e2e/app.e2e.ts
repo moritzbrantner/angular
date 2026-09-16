@@ -25,15 +25,24 @@ test('redirects to localized home and supports locale switching plus hotkeys', a
   await expect(page.getByRole('dialog', { name: /Jump between routes/ })).toBeVisible();
 });
 
-test('shared input bindings ignore editable controls', async ({ page }) => {
+test('shared input bindings ignore navigation in editors but preserve Escape dismissal', async ({ page }) => {
   await page.goto('/en/login');
   await waitForInputBindings(page);
+
+  await page.getByRole('button', { name: 'Discover' }).click();
+  const menuHome = page.locator('.menu-panel').getByRole('link', { name: 'Home' });
+  await expect(menuHome).toBeVisible();
 
   const email = page.getByRole('textbox', { name: 'Email' });
   await email.fill('alex@example.com');
   await email.press('Alt+F');
 
   await expect(page).toHaveURL(/\/en\/login$/);
+  await expect(email).toHaveValue('alex@example.com');
+  await expect(menuHome).toBeVisible();
+
+  await email.press('Escape');
+  await expect(menuHome).toBeHidden();
   await expect(email).toHaveValue('alex@example.com');
 });
 
