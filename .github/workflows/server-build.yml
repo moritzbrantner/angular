@@ -45,14 +45,14 @@ jobs:
       - name: Run e2e tests
         run: npm run test:e2e
 
-      - name: Install pinned Axe runner
-        run: npm install --no-save --package-lock=false --ignore-scripts --fund=false --audit=false @axe-core/playwright@4.13.0 axe-core@4.13.0
+      - name: Build optional server variant
+        run: npm run build:server
+
+      - name: Install locked accessibility runner
+        run: npm ci --prefix e2e/accessibility --ignore-scripts --fund=false --audit=false
 
       - name: Run accessibility checks
         run: npx playwright test --config=playwright.axe.config.ts
-
-      - name: Build optional server variant
-        run: npm run build:server
 
       - name: Upload server artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
