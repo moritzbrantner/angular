@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
-  testDir: './e2e',
+  testDir: './e2e/accessibility',
   testMatch: '**/*.axe.ts',
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
