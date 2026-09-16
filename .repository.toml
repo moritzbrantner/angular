@@ -1,0 +1,9 @@
+schema_version = 1
+id = "moritzbrantner/angular"
+kind = "app"
+status = "maintenance"
+summary = "Angular application with browser, server-rendered, integration, end-to-end, and GitHub Pages verification surfaces."
+depends_on = []
+consumed_by = []
+supersedes = []
+replaced_by = []
